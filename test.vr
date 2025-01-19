@@ -1,0 +1,6 @@
+builtin proc print(str text);
+
+proc main() -> void {
+	int age = 18;
+	print("hii");
+}
