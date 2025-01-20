@@ -3,7 +3,8 @@
 #include "lexer.h"
 
 int main() {
-	FILE *input_file = fopen("test.vr", "rb");
+	FILE *input_file = NULL;
+	fopen_s(&input_file, "test.vr", "rb");
 	fseek(input_file, 0, SEEK_END);
 	long file_len = ftell(input_file);
 	rewind(input_file);
@@ -23,7 +24,7 @@ int main() {
 	lexer.start = lexer.current = 0;
 	lexer_scan(&lexer);
 
-	printf("printing %d tokens:\n", lexer.tokens_len);
+	printf("printing %zu tokens:\n", lexer.tokens_len);
 	for (int i = 0; i < lexer.tokens_len; i++) {
 		Token token = lexer.tokens_arr[i];
 		char *str = token_to_string(token); // this might leak memory!

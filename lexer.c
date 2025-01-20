@@ -9,7 +9,7 @@ int lexer_end(Lexer lexer) {
 
 char lexer_peek(Lexer lexer) {
 	if (lexer_end(lexer)) {
-		printf("tried to peek after end cur=%d len=%d\n", lexer.current, lexer.buf_len);
+		printf("tried to peek after end cur=%zu len=%zu\n", lexer.current, lexer.buf_len);
 		exit(1);
 	}
 
@@ -18,7 +18,7 @@ char lexer_peek(Lexer lexer) {
 
 char lexer_consume(Lexer *lexer) {
 	if (lexer_end(*lexer)) {
-		printf("tried to consume after end cur=%d len=%d\n", lexer->current, lexer->buf_len);
+		printf("tried to consume after end cur=%zu len=%zu\n", lexer->current, lexer->buf_len);
 		exit(1);
 	}
 
@@ -76,7 +76,7 @@ void lexer_scan(Lexer *lexer) {
 				lexer_add_token(lexer, TK_ARROW, (TokenValue){});
 				break;
 			}
-			printf("expected > after - for -> at %d\n", lexer->current);
+			printf("expected > after - for -> at %zu\n", lexer->current);
 			exit(1);
 		case '"':
 			int terminated = 1;
