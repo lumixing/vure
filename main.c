@@ -1,48 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "main.h"
-
-int lexer_end(Lexer lexer) {
-	return lexer.current >= lexer.buf_len;
-}
-
-char lexer_peek(Lexer lexer) {
-	if (lexer_end(lexer)) {
-		printf("tried to peek after end cur=%d len=%d\n", lexer.current, lexer.buf_len);
-		exit(1);
-	}
-
-	return lexer.buf[lexer.current];
-}
-
-char lexer_consume(Lexer *lexer) {
-	if (lexer_end(*lexer)) {
-		printf("tried to consume after end cur=%d len=%d\n", lexer->current, lexer->buf_len);
-		exit(1);
-	}
-
-	char ch = lexer_peek(*lexer);
-	lexer->current++;
-	return ch;
-}
-
-Span lexer_span(Lexer lexer) {
-	return (Span){lexer.start, lexer.current};
-}
-
-void lexer_scan(Lexer *lexer) {
-	while (!lexer_end(*lexer)) {
-		lexer->start = lexer->current;
-		char ch = lexer_consume(lexer);
-		printf("%c\n", ch);
-		switch (ch) {
-		case '{':
-			lexer->tokens_arr[lexer->tokens_len++] = (Token){TK_LBRACE, {}, lexer_span(*lexer)};
-			printf("%d\n", lexer->tokens_len++);
-			break;
-		}
-	}
-}
+#include "lexer.h"
 
 int main() {
 	FILE *input_file = fopen("test.vr", "rb");
@@ -61,12 +19,25 @@ int main() {
 	Lexer lexer;
 	lexer.buf = input_buf;
 	lexer.buf_len = file_len;
+	lexer.tokens_len = 0;
 	lexer.start = lexer.current = 0;
 	lexer_scan(&lexer);
-	printf("ds %d\n", lexer.tokens_len);
 
+	printf("printing %d tokens:\n", lexer.tokens_len);
 	for (int i = 0; i < lexer.tokens_len; i++) {
-		printf("%d\n", lexer.tokens_arr[i].type);
+		Token token = lexer.tokens_arr[i];
+		char *str = token_to_string(token); // this might leak memory!
+		printf("%s\n", str);
+
+		switch (token.type) {
+		case TK_IDENT:
+		case TK_LIT_STR:
+		case TK_LIT_INT:
+			free(str);
+			break;
+		default:
+			break;
+		}
 	}
 
 	free(input_buf);

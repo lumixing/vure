@@ -1,3 +1,6 @@
+#ifndef TOKEN_H
+#define TOKEN_H
+
 typedef struct Span {
 	size_t lo;
 	size_t hi;
@@ -37,15 +40,6 @@ typedef struct Token {
 	Span span;
 } Token;
 
-typedef struct Lexer {
-	char *buf;
-	size_t buf_len;
-	Token tokens_arr[1000];
-	Token *tokens;
-	size_t tokens_len;
-	size_t start;
-	size_t current;
-} Lexer;
+char *token_to_string(Token token);
 
-
-
+#endif
