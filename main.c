@@ -1,6 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "ast.h"
+#include "parser.h"
 #include "lexer.h"
+
+char *type_str(Type type) {
+	switch (type) {
+	case TYPE_VOID: return "void";
+	case TYPE_INT: return "int";
+	case TYPE_STR: return "str";
+	}
+}
 
 int main() {
 	FILE *input_file = NULL;
@@ -24,20 +34,53 @@ int main() {
 	lexer.start = lexer.current = 0;
 	lexer_scan(&lexer);
 
-	printf("printing %zu tokens:\n", lexer.tokens_len);
-	for (int i = 0; i < lexer.tokens_len; i++) {
-		Token token = lexer.tokens_arr[i];
-		char *str = token_to_string(token); // this might leak memory!
-		printf("%s\n", str);
+	// printf("printing %zu tokens:\n", lexer.tokens_len);
+	// for (int i = 0; i < lexer.tokens_len; i++) {
+	// 	Token token = lexer.tokens_arr[i];
+	// 	char *str = token_to_string(token); // this might leak memory!
+	// 	printf("%s\n", str);
 
-		switch (token.type) {
-		case TK_IDENT:
-		case TK_LIT_STR:
-		case TK_LIT_INT:
-			free(str);
-			break;
-		default:
-			break;
+	// 	switch (token.type) {
+	// 	case TK_IDENT:
+	// 	case TK_LIT_STR:
+	// 	case TK_LIT_INT:
+	// 		free(str);
+	// 		break;
+	// 	default:
+	// 		break;
+	// 	}
+	// }
+
+	Parser prs;
+	prs.tokens = lexer.tokens_arr;
+	prs.tokens_len = lexer.tokens_len;
+	prs.top_stmts_len = 0;
+	prs.current = 0;
+	prs_parse(&prs);
+
+	for (int i = 0; i < prs.top_stmts_len; i++) {
+		TopStmt tstmt = prs.top_stmts_arr[i];
+
+		if (tstmt.type == TSTMT_BUILTIN_FUNC_DECL) {
+			FuncSign s = tstmt.value.builtin_func_decl.sign;
+			Param p = s.params[0];
+			printf("BuiltinFuncDecl(`%s`, %zu(%s `%s`), %s)\n", s.name, s.params_len, type_str(p.type), p.name, type_str(s.ret_type));
+		} else if (tstmt.type == TSTMT_FUNC_DEF) {
+			FuncDef t = tstmt.value.func_def;
+			FuncSign s = t.sign;
+			Param p = s.params[0];
+			printf("FuncDef(`%s`, %zu(%s `%s`), %s)\n", s.name, s.params_len, type_str(p.type), p.name, type_str(s.ret_type));
+			for (int j = 0; j < t.stmts_len; j++) {
+				Stmt stmt = t.stmts[j];
+
+				if (stmt.type == STMT_VAR_DEF) {
+					VarDef s = stmt.value.var_def;
+					printf("\tVarDef(%s `%s`)\n", type_str(s.type), s.name);
+				} else if (stmt.type == STMT_FUNC_CALL) {
+					FuncCall s = stmt.value.func_call;
+					printf("\tFuncCall(`%s`)\n", s.name);
+				}
+			}
 		}
 	}
 

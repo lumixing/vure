@@ -1,6 +1,7 @@
-builtin proc print(str text);
+builtin proc print(str text) int;
 
-proc main() -> void {
+proc main(int st) void {
 	int age = 18;
+	str user = "ds";
 	print("hii");
 }

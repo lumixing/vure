@@ -1,2 +1,2 @@
-vure: main.c lexer.c token.c
-	cc main.c lexer.c token.c -o vure
+vure: main.c lexer.c token.c parser.c 
+	cc main.c lexer.c token.c parser.c -o vure
