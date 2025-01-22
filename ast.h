@@ -7,6 +7,7 @@ typedef enum Type {
     TYPE_VOID,
     TYPE_STR,
     TYPE_INT,
+    TYPE_VAR,
 } Type;
 
 typedef struct Value {
@@ -77,5 +78,8 @@ typedef struct TopStmt {
     TopStmtType type;
     TopStmtValue value;
 } TopStmt;
+
+char *type_str(Type type);
+void print_value(Type type, TokenValue value);
 
 #endif

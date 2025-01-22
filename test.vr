@@ -1,7 +1,7 @@
 builtin proc print(str text) int;
 
 proc main(int st) void {
-	int age = 18;
-	str user = "ds";
-	print("hii");
+	print("hello from the");
+	print("GOOFIEST LANGUAGE");
+	print("made!");
 }

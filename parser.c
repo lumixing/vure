@@ -82,6 +82,7 @@ Value prs_value(Parser *prs) {
     switch (tk.type) {
         case TK_LIT_INT: return (Value){TYPE_INT, tk.value};
         case TK_LIT_STR: return (Value){TYPE_STR, tk.value};
+        case TK_IDENT: return (Value){TYPE_VAR, tk.value};
         default:
             printf("expected value but got %s\n", token_to_string(tk));
             exit(1);

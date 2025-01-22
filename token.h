@@ -1,6 +1,8 @@
 #ifndef TOKEN_H
 #define TOKEN_H
 
+#include <stddef.h>
+
 typedef struct Span {
 	size_t lo;
 	size_t hi;
