@@ -1,6 +1,5 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "ast.h"
 #include "parser.h"
 #include "lexer.h"
 #include "interp.h"

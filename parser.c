@@ -89,6 +89,18 @@ Value prs_value(Parser *prs) {
     }
 }
 
+int prs_is_value(Parser prs) {
+    Token tk = prs_peek(prs);
+    switch (tk.type) {
+        case TK_LIT_INT:
+        case TK_LIT_STR:
+        case TK_IDENT:
+            return 1;
+        default:
+            return 0;
+    }
+}
+
 Stmt prs_stmt(Parser *prs) {
     Token tk = prs_peek(*prs);
 
@@ -97,13 +109,18 @@ Stmt prs_stmt(Parser *prs) {
             prs->current++;
             char *name = tk.value.str;
             prs_expect(prs, TK_LPAREN);
-            Value value = prs_value(prs);
+
+            Value *args = malloc(sizeof(Value));
+            size_t args_len = 0;
+            if (prs_is_value(*prs)) {
+                Value value = prs_value(prs);
+                args[args_len++] = value;
+            }
+            
             prs_expect(prs, TK_RPAREN);
             prs_expect(prs, TK_SEMICOLON);
 
-            Value *args = malloc(sizeof(Value));
-            args[0] = value;
-            FuncCall func_call = {name, args, 1};
+            FuncCall func_call = {name, args, args_len};
 
             return (Stmt){STMT_FUNC_CALL, (StmtValue)func_call};
         } break;

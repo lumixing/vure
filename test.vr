@@ -1,7 +1,12 @@
 builtin proc print(str text) int;
 
+proc greet(int st) void {
+	print("greetings!");
+}
+
 proc main(int st) void {
-	print("hello from the");
-	print("GOOFIEST LANGUAGE");
-	print("made!");
+	str username = "lumix";
+	greet();
+	#print("hello");
+	#print(username);
 }

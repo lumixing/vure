@@ -104,6 +104,11 @@ void lexer_scan(Lexer *lexer) {
 			lexer_add_token(lexer, TK_LIT_STR, (TokenValue)lexeme);
 			
 			break;
+		case '#':
+			while (lexer_peek(*lexer) != '\r') {
+				lexer->current++;
+			}
+			break;
 		default:
 			if (char_is_alpha(ch)) {
 				while (char_is_alpha(lexer_peek(*lexer))) {
